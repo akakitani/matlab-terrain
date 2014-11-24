@@ -1,4 +1,9 @@
 clear
+clf
 
-heightmap = generate_terrain(5, @midpoint_displacement);
-render(heightmap, 10, 2 ^ 4)
+SIZE_LEVEL = 4;
+DETAIL_LEVEL = 5;
+WATER_LEVEL = 0.3;
+
+heightmap = generate_terrain(SIZE_LEVEL, @midpoint_displacement);
+render(heightmap, DETAIL_LEVEL, 0.3)
