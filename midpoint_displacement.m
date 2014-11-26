@@ -1,21 +1,22 @@
 function Z = midpoint_displacement(grid_max, max_height)
     % Initialize corners
+    rng('shuffle');
     Z = zeros(grid_max, grid_max);
-    Z(1, 1) = max_height;
-    Z(end, 1) = max_height;
-    Z(1, end) = max_height;
-    Z(end, end) = max_height;
+    Z(1, 1) = 0;
+    Z(end, 1) = 0;
+    Z(1, end) = 0;
+    Z(end, end) = 0;
     Z = divide(Z, grid_max, max_height);
 end
 
 function height_map = divide(Z, grid_size, grid_max)
-    ROUGHNESS_FACTOR = 0.6;
+    ROUGHNESS_FACTOR = 0.3;
 
-    half = floor(grid_size / 2);
+    half = ceil(grid_size / 2);
     scale = grid_size * ROUGHNESS_FACTOR;
     height_map = Z;
 
-    if half < 1
+    if half <= 1
         return
     end
 

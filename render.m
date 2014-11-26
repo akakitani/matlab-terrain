@@ -1,4 +1,4 @@
-function render(heightmap, detail_level, water_level, z_aspect_ratio)
+function render(heightmap, detail_level, water_level, z_aspect_ratio, use_smoothing)
     detail = 1 / detail_level;
     [size_x, size_y] = size(heightmap);
 
@@ -6,8 +6,10 @@ function render(heightmap, detail_level, water_level, z_aspect_ratio)
     [Xq, Yq] = meshgrid(1:detail:size_x, 1:detail:size_y);
 
     Z = interp2(X, Y, heightmap, Xq, Yq);
-    %f = filter2(fspecial('gaussian'), Z);
-    %Z = conv2(Z, f, 'same');
+    if use_smoothing
+        f = filter2(fspecial('gaussian'), Z);
+        Z = conv2(Z, f, 'same');
+    end
 
     % Scale to between 0 and 1
     Z = (Z - min(Z(:))) ./ (max(Z(:) - min(Z(:))));
@@ -19,7 +21,7 @@ function render(heightmap, detail_level, water_level, z_aspect_ratio)
 
     axis normal;
     set(gca, 'Projection', 'perspective')
-    daspect([1, 1, z_aspect_ratio])
+    set(gca,'DataAspectRatio',[1, 1, z_aspect_ratio])
 
     colormap(getfield(load('cape', 'map'), 'map'));
     shading interp;                  % Interpolate color across faces.
