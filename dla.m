@@ -1,4 +1,4 @@
-function Z = dla(grid_max, max_height)
+function Z = dla(grid_max)
     DIRECTION_N = [0, 1];
     DIRECTION_NE = [1, 1];
     DIRECTION_E = [1, 0];
@@ -55,7 +55,7 @@ function Z = dla(grid_max, max_height)
             x = next_coord(1);
             y = next_coord(2);
             if (x <= 0 || x > grid_max || y <= 0 || y > grid_max)
-                % If out of bounds, try again
+                % If out of bounds, try again         
                 continue;
             elseif Z(x, y) > 0
             % If we already visited this position, also try again
@@ -70,6 +70,7 @@ function Z = dla(grid_max, max_height)
         if x == root_x && y == root_y
             prev_coord = generate_start_pos(grid_max);
         end
+        render_gen_process_heatmap(Z, 'dla_', p, 20000);
     end
 end
 

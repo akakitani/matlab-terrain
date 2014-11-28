@@ -1,40 +1,42 @@
-function Z = midpoint_displacement(grid_max, max_height)
+function Z = midpoint_displacement(grid_max)
     % Initialize corners
+    max_height = 1.0;
     rng('shuffle');
     Z = zeros(grid_max, grid_max);
-    Z(1, 1) = 0;
-    Z(end, 1) = 0;
-    Z(1, end) = 0;
-    Z(end, end) = 0;
-    Z = divide(Z, grid_max, max_height);
+    Z(1, 1) = (rand() * max_height * 2) - max_height;
+    Z(end, 1) = (rand() * max_height * 2) - max_height;
+    Z(1, end) = (rand() * max_height * 2) - max_height;
+    Z(end, end) = (rand() * max_height * 2) - max_height;
+    Z = divide(Z, grid_max, grid_max, max_height);
 end
 
-function height_map = divide(Z, grid_size, grid_max)
-    ROUGHNESS_FACTOR = 0.3;
-
+function height_map = divide(Z, grid_size, grid_max, max_height)
+    ROUGHNESS_FACTOR = 1;
     half = ceil(grid_size / 2);
-    scale = grid_size * ROUGHNESS_FACTOR;
+    scale = max_height * ROUGHNESS_FACTOR;
     height_map = Z;
-
-    if half <= 1
+    
+    render_gen_process(height_map, 'diamond_square_', grid_size, 1);
+    
+    if (grid_size / 2) < 1
         return
     end
 
-    for j = half:grid_size:grid_max
-        for i = half:grid_size:grid_max
-            height_map = square(height_map, i, j, half, (rand() * scale * 2) - scale);
+    for j = half:grid_size - 1:grid_max
+        for i = half:grid_size - 1:grid_max
+            height_map = square(height_map, i, j, half - 1, (rand() * scale * 2) - scale);
         end
     end
-    for j = 1:half:grid_max
-        i_start = mod((j - 1 + half), grid_size);
+    for j = 1:half - 1:grid_max
+        i_start = mod((j + half - 1), grid_size - 1);
         if i_start == 0
             i_start = 1;
         end
-        for i = i_start:grid_size:grid_max
-            height_map = diamond(height_map, i, j, half, (rand() * scale * 2) - scale);
+        for i = i_start:grid_size - 1:grid_max
+            height_map = diamond(height_map, i, j, half - 1, (rand() * scale * 2) - scale);
         end
     end
-    height_map = divide(height_map, half, grid_max);
+    height_map = divide(height_map, half, grid_max, max_height / 2);
 end
 
 function height_map = square(Z, x, y, grid_size, offset)
@@ -63,11 +65,11 @@ function height_map = diamond(Z, x, y, grid_size, offset)
     height_map(x, y) = avg + offset;
 end
 
-function x = get(Z, x, y)
+function val = get(Z, x, y)
     [X, Y] = size(Z);
     if x < 1 || y < 1 || x > X || y > Y
-        x = NaN;
+        val = NaN;
     else
-        x = Z(x, y);
+        val = Z(x, y);
     end
 end
