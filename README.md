@@ -1,4 +1,3 @@
-matlab-terrain
-==============
+# Matlab Terrain Generation
 
-Final Project for EPS 109
+Final project for Earth and Planetary Science 109

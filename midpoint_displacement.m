@@ -7,6 +7,7 @@ function Z = midpoint_displacement(grid_max)
     Z(end, 1) = (rand() * max_height * 2) - max_height;
     Z(1, end) = (rand() * max_height * 2) - max_height;
     Z(end, end) = (rand() * max_height * 2) - max_height;
+    render_gen_process(Z, 'diamond_square_', grid_max + 1, 1);
     Z = divide(Z, grid_max, grid_max, max_height);
 end
 
@@ -15,18 +16,13 @@ function height_map = divide(Z, grid_size, grid_max, max_height)
     half = ceil(grid_size / 2);
     scale = max_height * ROUGHNESS_FACTOR;
     height_map = Z;
-    
-    render_gen_process(height_map, 'diamond_square_', grid_size, 1);
-    
-    if (grid_size / 2) < 1
-        return
-    end
 
     for j = half:grid_size - 1:grid_max
         for i = half:grid_size - 1:grid_max
             height_map = square(height_map, i, j, half - 1, (rand() * scale * 2) - scale);
         end
     end
+
     for j = 1:half - 1:grid_max
         i_start = mod((j + half - 1), grid_size - 1);
         if i_start == 0
@@ -36,6 +32,13 @@ function height_map = divide(Z, grid_size, grid_max, max_height)
             height_map = diamond(height_map, i, j, half - 1, (rand() * scale * 2) - scale);
         end
     end
+
+    render_gen_process(height_map, 'diamond_square_', grid_size, 1);
+
+    if (half / 2) < 1
+        return
+    end
+
     height_map = divide(height_map, half, grid_max, max_height / 2);
 end
 

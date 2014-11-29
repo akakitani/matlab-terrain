@@ -23,36 +23,36 @@ function main
     WATER_LEVEL = 'WATER_LEVEL';
     Z_ASPECT_RATIO = 'Z_ASPECT_RATIO';
 
-    
-    %{
+
+
     % Midpoint Displacement
 
     midpoint_displacement_opts = containers.Map;
     midpoint_displacement_opts(TERRAIN_FUNCTION) = @midpoint_displacement;
-    midpoint_displacement_opts(SIZE_LEVEL) = 7;
-    midpoint_displacement_opts(FILTER_DETAIL_LEVEL) = 2;
-    midpoint_displacement_opts(FILTER_RADIUS_PARAMS) = [4, 8, 16, 32];
-    midpoint_displacement_opts(DETAIL_LEVEL) = 5;
+    midpoint_displacement_opts(SIZE_LEVEL) = 8;
+    midpoint_displacement_opts(FILTER_DETAIL_LEVEL) = 1;
+    midpoint_displacement_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16];
+    midpoint_displacement_opts(DETAIL_LEVEL) = 10;
     midpoint_displacement_opts(WATER_LEVEL) = 0.1;
     midpoint_displacement_opts(Z_ASPECT_RATIO) = 0.01;
 
     generate_terrain(midpoint_displacement_opts);
+
+
+    %{
+    % random_walk
+
+    random_walk_opts = containers.Map;
+    random_walk_opts(TERRAIN_FUNCTION) = @random_walk;
+    random_walk_opts(SIZE_LEVEL) = 9;
+    random_walk_opts(FILTER_DETAIL_LEVEL) = 2;
+    random_walk_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64, 128, 256];
+    random_walk_opts(DETAIL_LEVEL) = 1;
+    random_walk_opts(WATER_LEVEL) = 0.05;
+    random_walk_opts(Z_ASPECT_RATIO) = 0.01;
+
+    generate_terrain(random_walk_opts);
     %}
-
-    
-    % DLA
-
-    dla_opts = containers.Map;
-    dla_opts(TERRAIN_FUNCTION) = @dla;
-    dla_opts(SIZE_LEVEL) = 9;
-    dla_opts(FILTER_DETAIL_LEVEL) = 2;
-    dla_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64, 128, 256];
-    dla_opts(DETAIL_LEVEL) = 1;
-    dla_opts(WATER_LEVEL) = 0.05;
-    dla_opts(Z_ASPECT_RATIO) = 0.01;
-
-    generate_terrain(dla_opts);
-    
 
 
     %{
@@ -119,12 +119,12 @@ function generate_terrain(opts)
         Z = terrain_function(grid_size);
     end
     fprintf('Terrain generation finished.\n\n');
-    
+
     if opts.isKey(FILTER_DETAIL_LEVEL) && opts.isKey(FILTER_RADIUS_PARAMS)
         Z = smooth(Z, opts(FILTER_DETAIL_LEVEL), opts(FILTER_RADIUS_PARAMS));
         fprintf('Smoothing finished.\n\n');
     end
-    
+
     render(Z, opts(DETAIL_LEVEL), opts(WATER_LEVEL), opts(Z_ASPECT_RATIO));
     fprintf('Terrain rendering finished.\n\n');
 end
