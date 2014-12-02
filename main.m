@@ -1,4 +1,4 @@
-function main
+function main(algorithm)
     clear
     clf reset
     cla reset
@@ -23,86 +23,78 @@ function main
     WATER_LEVEL = 'WATER_LEVEL';
     Z_ASPECT_RATIO = 'Z_ASPECT_RATIO';
 
+    switch algorithm
+        case 'midpoint_displacement'
+            midpoint_displacement_opts = containers.Map;
+            midpoint_displacement_opts(TERRAIN_FUNCTION) = @midpoint_displacement;
+            midpoint_displacement_opts(SIZE_LEVEL) = 8;
+            midpoint_displacement_opts(FILTER_DETAIL_LEVEL) = 1;
+            midpoint_displacement_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16];
+            midpoint_displacement_opts(DETAIL_LEVEL) = 10;
+            midpoint_displacement_opts(WATER_LEVEL) = 0.1;
+            midpoint_displacement_opts(Z_ASPECT_RATIO) = 0.01;
 
+            generate_terrain(midpoint_displacement_opts);
+        end
+        case 'random_walk'
+            random_walk_opts = containers.Map;
+            random_walk_opts(TERRAIN_FUNCTION) = @random_walk;
+            random_walk_opts(SIZE_LEVEL) = 9;
+            random_walk_opts(FILTER_DETAIL_LEVEL) = 2;
+            random_walk_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64, 128, 256];
+            random_walk_opts(DETAIL_LEVEL) = 1;
+            random_walk_opts(WATER_LEVEL) = 0.05;
+            random_walk_opts(Z_ASPECT_RATIO) = 0.01;
 
-    % Midpoint Displacement
+            generate_terrain(random_walk_opts);
+        end
+        case 'heightmap'
+            heightmap_opts = containers.Map;
+            heightmap_opts(TERRAIN_FUNCTION) = @generate_from_img;
+            heightmap_opts(IMAGE_FILENAME) = 'heightmap/terrain.jpg';
+            heightmap_opts(SIZE_LEVEL) = 8;
+            heightmap_opts(DETAIL_LEVEL) = 10;
+            heightmap_opts(WATER_LEVEL) = 0;
+            heightmap_opts(Z_ASPECT_RATIO) = 0.05;
 
-    midpoint_displacement_opts = containers.Map;
-    midpoint_displacement_opts(TERRAIN_FUNCTION) = @midpoint_displacement;
-    midpoint_displacement_opts(SIZE_LEVEL) = 8;
-    midpoint_displacement_opts(FILTER_DETAIL_LEVEL) = 1;
-    midpoint_displacement_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16];
-    midpoint_displacement_opts(DETAIL_LEVEL) = 10;
-    midpoint_displacement_opts(WATER_LEVEL) = 0.1;
-    midpoint_displacement_opts(Z_ASPECT_RATIO) = 0.01;
+            generate_terrain(heightmap_opts);
+        end
+        case 'galaxy'
+            galaxy_opts = containers.Map;
+            galaxy_opts(TERRAIN_FUNCTION) = @generate_from_img;
+            galaxy_opts(IMAGE_FILENAME) = 'galaxy/galaxy.jpg';
+            galaxy_opts(SIZE_LEVEL) = 8;
+            galaxy_opts(FILTER_DETAIL_LEVEL) = 2;
+            galaxy_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64, 128];
+            galaxy_opts(DETAIL_LEVEL) = 10;
+            galaxy_opts(WATER_LEVEL) = 0.2;
+            galaxy_opts(Z_ASPECT_RATIO) = 0.01;
 
-    generate_terrain(midpoint_displacement_opts);
+            generate_terrain(galaxy_opts);
+        end
+        case 'cloud'
+            cloud_opts = containers.Map;
+            cloud_opts(TERRAIN_FUNCTION) = @generate_from_img;
+            cloud_opts(IMAGE_FILENAME) = 'cloud/cloud.jpg';
+            cloud_opts(SIZE_LEVEL) = 8;
+            cloud_opts(FILTER_DETAIL_LEVEL) = 2;
+            cloud_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64];
+            cloud_opts(DETAIL_LEVEL) = 10;
+            cloud_opts(WATER_LEVEL) = 0.2;
+            cloud_opts(Z_ASPECT_RATIO) = 0.01;
 
-
-    %{
-    % random_walk
-
-    random_walk_opts = containers.Map;
-    random_walk_opts(TERRAIN_FUNCTION) = @random_walk;
-    random_walk_opts(SIZE_LEVEL) = 9;
-    random_walk_opts(FILTER_DETAIL_LEVEL) = 2;
-    random_walk_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64, 128, 256];
-    random_walk_opts(DETAIL_LEVEL) = 1;
-    random_walk_opts(WATER_LEVEL) = 0.05;
-    random_walk_opts(Z_ASPECT_RATIO) = 0.01;
-
-    generate_terrain(random_walk_opts);
-    %}
-
-
-    %{
-    % Terrain heightmap
-
-    heightmap_opts = containers.Map;
-    heightmap_opts(TERRAIN_FUNCTION) = @generate_from_img;
-    heightmap_opts(IMAGE_FILENAME) = 'heightmap/terrain.jpg';
-    heightmap_opts(SIZE_LEVEL) = 8;
-    heightmap_opts(DETAIL_LEVEL) = 10;
-    heightmap_opts(WATER_LEVEL) = 0;
-    heightmap_opts(Z_ASPECT_RATIO) = 0.05;
-
-    generate_terrain(heightmap_opts);
-    %}
-
-
-    %{
-    % Galaxy as heightmap
-
-    galaxy_opts = containers.Map;
-    galaxy_opts(TERRAIN_FUNCTION) = @generate_from_img;
-    galaxy_opts(IMAGE_FILENAME) = 'galaxy/galaxy.jpg';
-    galaxy_opts(SIZE_LEVEL) = 8;
-    galaxy_opts(FILTER_DETAIL_LEVEL) = 2;
-    galaxy_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64, 128];
-    galaxy_opts(DETAIL_LEVEL) = 10;
-    galaxy_opts(WATER_LEVEL) = 0.2;
-    galaxy_opts(Z_ASPECT_RATIO) = 0.01;
-
-    generate_terrain(galaxy_opts);
-    %}
-
-
-    %{
-    % Clouds as heightmap
-
-    cloud_opts = containers.Map;
-    cloud_opts(TERRAIN_FUNCTION) = @generate_from_img;
-    cloud_opts(IMAGE_FILENAME) = 'cloud/cloud.jpg';
-    cloud_opts(SIZE_LEVEL) = 8;
-    cloud_opts(FILTER_DETAIL_LEVEL) = 2;
-    cloud_opts(FILTER_RADIUS_PARAMS) = [2, 4, 8, 16, 32, 64];
-    cloud_opts(DETAIL_LEVEL) = 10;
-    cloud_opts(WATER_LEVEL) = 0.2;
-    cloud_opts(Z_ASPECT_RATIO) = 0.01;
-
-    generate_terrain(cloud_opts);
-    %}
-
+            generate_terrain(cloud_opts);
+        end
+        case default
+            fprintf('Usage: main(<terrain_generation_type>)\n');
+            fprintf('<terrain_generation_type> is can be one of the following strings:\n');
+            fprintf('\t midpoint_displacement -- midpoint displacement algorithm\n');
+            fprintf('\t random_walk -- random walk algorithm\n');
+            fprintf('\t heightmap -- uses heightmap image of actual terrain\n');
+            fprintf('\t galaxy -- uses image of Milky Way as heightmap\n');
+            fprintf('\t cloud -- uses image of clouds as heightmap\n');
+        end
+    end
 end
 
 
