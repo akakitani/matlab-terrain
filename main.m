@@ -1,13 +1,7 @@
 function main(algorithm)
-    clear
-    clf reset
-    cla reset
-
-
     % Global configs
     global WRITE_TO_FILE;
     WRITE_TO_FILE = false;
-
 
     % Keys for options hash passed into terrain gen function
     global TERRAIN_FUNCTION SIZE_LEVEL IMAGE_FILENAME;
@@ -35,7 +29,6 @@ function main(algorithm)
             midpoint_displacement_opts(Z_ASPECT_RATIO) = 0.01;
 
             generate_terrain(midpoint_displacement_opts);
-        end
         case 'random_walk'
             random_walk_opts = containers.Map;
             random_walk_opts(TERRAIN_FUNCTION) = @random_walk;
@@ -47,7 +40,6 @@ function main(algorithm)
             random_walk_opts(Z_ASPECT_RATIO) = 0.01;
 
             generate_terrain(random_walk_opts);
-        end
         case 'heightmap'
             heightmap_opts = containers.Map;
             heightmap_opts(TERRAIN_FUNCTION) = @generate_from_img;
@@ -58,7 +50,6 @@ function main(algorithm)
             heightmap_opts(Z_ASPECT_RATIO) = 0.05;
 
             generate_terrain(heightmap_opts);
-        end
         case 'galaxy'
             galaxy_opts = containers.Map;
             galaxy_opts(TERRAIN_FUNCTION) = @generate_from_img;
@@ -71,7 +62,6 @@ function main(algorithm)
             galaxy_opts(Z_ASPECT_RATIO) = 0.01;
 
             generate_terrain(galaxy_opts);
-        end
         case 'cloud'
             cloud_opts = containers.Map;
             cloud_opts(TERRAIN_FUNCTION) = @generate_from_img;
@@ -84,16 +74,14 @@ function main(algorithm)
             cloud_opts(Z_ASPECT_RATIO) = 0.01;
 
             generate_terrain(cloud_opts);
-        end
-        case default
+        otherwise
             fprintf('Usage: main(<terrain_generation_type>)\n');
             fprintf('<terrain_generation_type> is can be one of the following strings:\n');
-            fprintf('\t midpoint_displacement -- midpoint displacement algorithm\n');
-            fprintf('\t random_walk -- random walk algorithm\n');
-            fprintf('\t heightmap -- uses heightmap image of actual terrain\n');
-            fprintf('\t galaxy -- uses image of Milky Way as heightmap\n');
-            fprintf('\t cloud -- uses image of clouds as heightmap\n');
-        end
+            fprintf('\t ''midpoint_displacement'' -- midpoint displacement algorithm\n');
+            fprintf('\t ''random_walk'' -- random walk algorithm\n');
+            fprintf('\t ''heightmap'' -- uses heightmap image of actual terrain\n');
+            fprintf('\t ''galaxy'' -- uses image of Milky Way as heightmap\n');
+            fprintf('\t ''cloud'' -- uses image of clouds as heightmap\n');
     end
 end
 
@@ -106,7 +94,7 @@ function generate_terrain(opts)
     terrain_function = opts(TERRAIN_FUNCTION);
     grid_size = (2 ^ opts(SIZE_LEVEL)) + 1;
     if isequal(terrain_function, @generate_from_img)
-        Z = terrain_function(opts(IMAGE_FILENAME), grid_size);
+        Z = generate_from_img(opts(IMAGE_FILENAME), grid_size);
     else
         Z = terrain_function(grid_size);
     end
